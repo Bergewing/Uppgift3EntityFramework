@@ -10,8 +10,10 @@ namespace DAL
     {
         public int DepartmentID { get; set; } 
         public string Name { get; set; }
-        public string Manager { get; set; }
+        public int Manager { get; set; }
 
-        public List<Products> Products { get; set; }
+
+        //Navigation Property
+        public List<DepartmentProducts> Products { get; set; }
     }
 }

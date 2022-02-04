@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using DAL.Extensions;
 
 namespace DAL
 {
@@ -19,22 +20,23 @@ namespace DAL
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Ingredients>()
-                .HasKey(s => new { s.Ingredient, s.Product });
+                .HasKey(s => new { s.Ingredient, s.ProductID });
 
             modelBuilder.Entity<Email>()
                 .HasKey(x => new { x.Emails, x.EmployeeID });
 
-            modelBuilder.Entity<DepPro>()
+            modelBuilder.Entity<DepartmentProducts>()
                 .HasKey(dp => new { dp.ProductsID, dp.DepartmentID });
 
+            modelBuilder.Seed();
         }
 
-        public DbSet<Employee> Employees { get; set; }
+        public DbSet<Employee> Employee { get; set; }
         public DbSet<Products> Products { get; set; }
-        public DbSet<DepPro> DepPro { get; set; }
-        public DbSet<Department> Departments { get; set; }
+        public DbSet<DepartmentProducts> DepartmentProducts { get; set; }
+        public DbSet<Department> Department { get; set; }
         public DbSet<Campaigns> Campaigns { get; set; }
-        public DbSet<Email> Emails { get; set; }
+        public DbSet<Email> Email { get; set; }
         public DbSet<Ingredients > Ingredients { get; set;}
     }
 

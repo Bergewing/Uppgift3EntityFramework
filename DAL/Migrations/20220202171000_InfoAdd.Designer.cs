@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20220131154053_Test1")]
-    partial class Test1
+    [Migration("20220202171000_InfoAdd")]
+    partial class InfoAdd
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -51,9 +51,8 @@ namespace DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DepartmentID"), 1L, 1);
 
-                    b.Property<string>("Manager")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Manager")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -61,31 +60,37 @@ namespace DAL.Migrations
 
                     b.HasKey("DepartmentID");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Department");
+                });
+
+            modelBuilder.Entity("DAL.DepartmentProducts", b =>
+                {
+                    b.Property<int>("ProductsID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepartmentID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductsID", "DepartmentID");
+
+                    b.HasIndex("DepartmentID");
+
+                    b.ToTable("DepartmentProducts");
                 });
 
             modelBuilder.Entity("DAL.Email", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
-
-                    b.Property<string>("EmailsID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnOrder(1);
+                    b.Property<string>("Emails")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("EmployeeID")
-                        .HasColumnType("int")
-                        .HasColumnOrder(2);
+                        .HasColumnType("int");
 
-                    b.HasKey("ID");
+                    b.HasKey("Emails", "EmployeeID");
 
                     b.HasIndex("EmployeeID");
 
-                    b.ToTable("Emails");
+                    b.ToTable("Email");
                 });
 
             modelBuilder.Entity("DAL.Employee", b =>
@@ -118,7 +123,25 @@ namespace DAL.Migrations
 
                     b.HasKey("EmployeeID");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employee");
+                });
+
+            modelBuilder.Entity("DAL.Ingredients", b =>
+                {
+                    b.Property<string>("Ingredient")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ProductID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductsID")
+                        .HasColumnType("int");
+
+                    b.HasKey("Ingredient", "ProductID");
+
+                    b.HasIndex("ProductsID");
+
+                    b.ToTable("Ingredients");
                 });
 
             modelBuilder.Entity("DAL.Products", b =>
@@ -141,7 +164,7 @@ namespace DAL.Migrations
                     b.Property<int>("ExpirationDate")
                         .HasColumnType("int");
 
-                    b.Property<int>("InventoryBy")
+                    b.Property<int>("InventoryByID")
                         .HasColumnType("int");
 
                     b.Property<int>("InventoryDate")
@@ -156,22 +179,28 @@ namespace DAL.Migrations
 
                     b.HasKey("ProductsID");
 
+                    b.HasIndex("InventoryByID");
+
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("DepartmentProducts", b =>
+            modelBuilder.Entity("DAL.DepartmentProducts", b =>
                 {
-                    b.Property<int>("DepartmentsDepartmentID")
-                        .HasColumnType("int");
+                    b.HasOne("DAL.Department", "department")
+                        .WithMany("Products")
+                        .HasForeignKey("DepartmentID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<int>("ProductsID")
-                        .HasColumnType("int");
+                    b.HasOne("DAL.Products", "products")
+                        .WithMany("Departments")
+                        .HasForeignKey("ProductsID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasKey("DepartmentsDepartmentID", "ProductsID");
+                    b.Navigation("department");
 
-                    b.HasIndex("ProductsID");
-
-                    b.ToTable("DepartmentProducts");
+                    b.Navigation("products");
                 });
 
             modelBuilder.Entity("DAL.Email", b =>
@@ -185,24 +214,45 @@ namespace DAL.Migrations
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("DepartmentProducts", b =>
+            modelBuilder.Entity("DAL.Ingredients", b =>
                 {
-                    b.HasOne("DAL.Department", null)
-                        .WithMany()
-                        .HasForeignKey("DepartmentsDepartmentID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DAL.Products", null)
-                        .WithMany()
+                    b.HasOne("DAL.Products", "products")
+                        .WithMany("Ingredients")
                         .HasForeignKey("ProductsID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("products");
+                });
+
+            modelBuilder.Entity("DAL.Products", b =>
+                {
+                    b.HasOne("DAL.Employee", "InventoryBy")
+                        .WithMany("Products")
+                        .HasForeignKey("InventoryByID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("InventoryBy");
+                });
+
+            modelBuilder.Entity("DAL.Department", b =>
+                {
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("DAL.Employee", b =>
                 {
                     b.Navigation("Emails");
+
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("DAL.Products", b =>
+                {
+                    b.Navigation("Departments");
+
+                    b.Navigation("Ingredients");
                 });
 #pragma warning restore 612, 618
         }

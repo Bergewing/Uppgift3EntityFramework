@@ -4,7 +4,7 @@
 
 namespace DAL.Migrations
 {
-    public partial class Test1 : Migration
+    public partial class Test9 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -23,7 +23,7 @@ namespace DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Departments",
+                name: "Department",
                 columns: table => new
                 {
                     DepartmentID = table.Column<int>(type: "int", nullable: false)
@@ -33,11 +33,11 @@ namespace DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Departments", x => x.DepartmentID);
+                    table.PrimaryKey("PK_Department", x => x.DepartmentID);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Employees",
+                name: "Employee",
                 columns: table => new
                 {
                     EmployeeID = table.Column<int>(type: "int", nullable: false)
@@ -51,7 +51,7 @@ namespace DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Employees", x => x.EmployeeID);
+                    table.PrimaryKey("PK_Employee", x => x.EmployeeID);
                 });
 
             migrationBuilder.CreateTable(
@@ -75,21 +75,19 @@ namespace DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Emails",
+                name: "Email",
                 columns: table => new
                 {
-                    EmailsID = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EmployeeID = table.Column<int>(type: "int", nullable: false),
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
+                    Emails = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    EmployeeID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Emails", x => x.ID);
+                    table.PrimaryKey("PK_Email", x => new { x.Emails, x.EmployeeID });
                     table.ForeignKey(
-                        name: "FK_Emails_Employees_EmployeeID",
+                        name: "FK_Email_Employee_EmployeeID",
                         column: x => x.EmployeeID,
-                        principalTable: "Employees",
+                        principalTable: "Employee",
                         principalColumn: "EmployeeID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -98,16 +96,16 @@ namespace DAL.Migrations
                 name: "DepartmentProducts",
                 columns: table => new
                 {
-                    DepartmentsDepartmentID = table.Column<int>(type: "int", nullable: false),
-                    ProductsID = table.Column<int>(type: "int", nullable: false)
+                    ProductsID = table.Column<int>(type: "int", nullable: false),
+                    DepartmentID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DepartmentProducts", x => new { x.DepartmentsDepartmentID, x.ProductsID });
+                    table.PrimaryKey("PK_DepartmentProducts", x => new { x.ProductsID, x.DepartmentID });
                     table.ForeignKey(
-                        name: "FK_DepartmentProducts_Departments_DepartmentsDepartmentID",
-                        column: x => x.DepartmentsDepartmentID,
-                        principalTable: "Departments",
+                        name: "FK_DepartmentProducts_Department_DepartmentID",
+                        column: x => x.DepartmentID,
+                        principalTable: "Department",
                         principalColumn: "DepartmentID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -118,15 +116,39 @@ namespace DAL.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_DepartmentProducts_ProductsID",
-                table: "DepartmentProducts",
-                column: "ProductsID");
+            migrationBuilder.CreateTable(
+                name: "Ingredients",
+                columns: table => new
+                {
+                    Ingredient = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Product = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProductsID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ingredients", x => new { x.Ingredient, x.Product });
+                    table.ForeignKey(
+                        name: "FK_Ingredients_Products_ProductsID",
+                        column: x => x.ProductsID,
+                        principalTable: "Products",
+                        principalColumn: "ProductsID",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Emails_EmployeeID",
-                table: "Emails",
+                name: "IX_DepartmentProducts_DepartmentID",
+                table: "DepartmentProducts",
+                column: "DepartmentID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Email_EmployeeID",
+                table: "Email",
                 column: "EmployeeID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ingredients_ProductsID",
+                table: "Ingredients",
+                column: "ProductsID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -138,16 +160,19 @@ namespace DAL.Migrations
                 name: "DepartmentProducts");
 
             migrationBuilder.DropTable(
-                name: "Emails");
+                name: "Email");
 
             migrationBuilder.DropTable(
-                name: "Departments");
+                name: "Ingredients");
+
+            migrationBuilder.DropTable(
+                name: "Department");
+
+            migrationBuilder.DropTable(
+                name: "Employee");
 
             migrationBuilder.DropTable(
                 name: "Products");
-
-            migrationBuilder.DropTable(
-                name: "Employees");
         }
     }
 }

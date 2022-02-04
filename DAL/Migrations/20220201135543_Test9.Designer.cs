@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20220131155503_Test2")]
-    partial class Test2
+    [Migration("20220201135543_Test9")]
+    partial class Test9
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -61,31 +61,37 @@ namespace DAL.Migrations
 
                     b.HasKey("DepartmentID");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Department");
+                });
+
+            modelBuilder.Entity("DAL.DepartmentProducts", b =>
+                {
+                    b.Property<int>("ProductsID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepartmentID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductsID", "DepartmentID");
+
+                    b.HasIndex("DepartmentID");
+
+                    b.ToTable("DepartmentProducts");
                 });
 
             modelBuilder.Entity("DAL.Email", b =>
                 {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
-
-                    b.Property<string>("EmailsID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnOrder(1);
+                    b.Property<string>("Emails")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("EmployeeID")
-                        .HasColumnType("int")
-                        .HasColumnOrder(2);
+                        .HasColumnType("int");
 
-                    b.HasKey("ID");
+                    b.HasKey("Emails", "EmployeeID");
 
                     b.HasIndex("EmployeeID");
 
-                    b.ToTable("Emails");
+                    b.ToTable("Email");
                 });
 
             modelBuilder.Entity("DAL.Employee", b =>
@@ -118,7 +124,7 @@ namespace DAL.Migrations
 
                     b.HasKey("EmployeeID");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employee");
                 });
 
             modelBuilder.Entity("DAL.Ingredients", b =>
@@ -177,19 +183,23 @@ namespace DAL.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("DepartmentProducts", b =>
+            modelBuilder.Entity("DAL.DepartmentProducts", b =>
                 {
-                    b.Property<int>("DepartmentsDepartmentID")
-                        .HasColumnType("int");
+                    b.HasOne("DAL.Department", "department")
+                        .WithMany("Products")
+                        .HasForeignKey("DepartmentID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<int>("ProductsID")
-                        .HasColumnType("int");
+                    b.HasOne("DAL.Products", "products")
+                        .WithMany("Departments")
+                        .HasForeignKey("ProductsID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasKey("DepartmentsDepartmentID", "ProductsID");
+                    b.Navigation("department");
 
-                    b.HasIndex("ProductsID");
-
-                    b.ToTable("DepartmentProducts");
+                    b.Navigation("products");
                 });
 
             modelBuilder.Entity("DAL.Email", b =>
@@ -214,19 +224,9 @@ namespace DAL.Migrations
                     b.Navigation("products");
                 });
 
-            modelBuilder.Entity("DepartmentProducts", b =>
+            modelBuilder.Entity("DAL.Department", b =>
                 {
-                    b.HasOne("DAL.Department", null)
-                        .WithMany()
-                        .HasForeignKey("DepartmentsDepartmentID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("DAL.Products", null)
-                        .WithMany()
-                        .HasForeignKey("ProductsID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("DAL.Employee", b =>
@@ -236,6 +236,8 @@ namespace DAL.Migrations
 
             modelBuilder.Entity("DAL.Products", b =>
                 {
+                    b.Navigation("Departments");
+
                     b.Navigation("Ingredients");
                 });
 #pragma warning restore 612, 618

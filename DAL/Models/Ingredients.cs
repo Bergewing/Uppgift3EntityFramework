@@ -11,7 +11,7 @@ namespace DAL
     public class Ingredients
     {
         public string Ingredient { get; set; }
-        public string Product { get; set; }
+        public int ProductID { get; set; }
 
         public Products products { get; set; }
 

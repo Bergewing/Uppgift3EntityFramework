@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DAL
 {
-    public class DepPro
+    public class DepartmentProducts
     {
         
         public int ProductsID { get; set; }

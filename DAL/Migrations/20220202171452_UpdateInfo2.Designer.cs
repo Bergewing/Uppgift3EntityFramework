@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20220131161252_Test4")]
-    partial class Test4
+    [Migration("20220202171452_UpdateInfo2")]
+    partial class UpdateInfo2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -51,9 +51,8 @@ namespace DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DepartmentID"), 1L, 1);
 
-                    b.Property<string>("Manager")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Manager")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -61,10 +60,10 @@ namespace DAL.Migrations
 
                     b.HasKey("DepartmentID");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Department");
                 });
 
-            modelBuilder.Entity("DAL.DepPro", b =>
+            modelBuilder.Entity("DAL.DepartmentProducts", b =>
                 {
                     b.Property<int>("ProductsID")
                         .HasColumnType("int");
@@ -76,7 +75,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("DepartmentID");
 
-                    b.ToTable("DepPro");
+                    b.ToTable("DepartmentProducts");
                 });
 
             modelBuilder.Entity("DAL.Email", b =>
@@ -91,7 +90,7 @@ namespace DAL.Migrations
 
                     b.HasIndex("EmployeeID");
 
-                    b.ToTable("Emails");
+                    b.ToTable("Email");
                 });
 
             modelBuilder.Entity("DAL.Employee", b =>
@@ -124,7 +123,7 @@ namespace DAL.Migrations
 
                     b.HasKey("EmployeeID");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employee");
                 });
 
             modelBuilder.Entity("DAL.Ingredients", b =>
@@ -132,13 +131,13 @@ namespace DAL.Migrations
                     b.Property<string>("Ingredient")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Product")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("ProductID")
+                        .HasColumnType("int");
 
                     b.Property<int>("ProductsID")
                         .HasColumnType("int");
 
-                    b.HasKey("Ingredient", "Product");
+                    b.HasKey("Ingredient", "ProductID");
 
                     b.HasIndex("ProductsID");
 
@@ -165,7 +164,7 @@ namespace DAL.Migrations
                     b.Property<int>("ExpirationDate")
                         .HasColumnType("int");
 
-                    b.Property<int>("InventoryBy")
+                    b.Property<int>("InventoryByID")
                         .HasColumnType("int");
 
                     b.Property<int>("InventoryDate")
@@ -180,34 +179,21 @@ namespace DAL.Migrations
 
                     b.HasKey("ProductsID");
 
+                    b.HasIndex("InventoryByID");
+
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("DepartmentProducts", b =>
-                {
-                    b.Property<int>("DepartmentsDepartmentID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductsID")
-                        .HasColumnType("int");
-
-                    b.HasKey("DepartmentsDepartmentID", "ProductsID");
-
-                    b.HasIndex("ProductsID");
-
-                    b.ToTable("DepartmentProducts");
-                });
-
-            modelBuilder.Entity("DAL.DepPro", b =>
+            modelBuilder.Entity("DAL.DepartmentProducts", b =>
                 {
                     b.HasOne("DAL.Department", "department")
-                        .WithMany()
+                        .WithMany("Products")
                         .HasForeignKey("DepartmentID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DAL.Products", "products")
-                        .WithMany()
+                        .WithMany("Departments")
                         .HasForeignKey("ProductsID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -239,28 +225,33 @@ namespace DAL.Migrations
                     b.Navigation("products");
                 });
 
-            modelBuilder.Entity("DepartmentProducts", b =>
+            modelBuilder.Entity("DAL.Products", b =>
                 {
-                    b.HasOne("DAL.Department", null)
-                        .WithMany()
-                        .HasForeignKey("DepartmentsDepartmentID")
+                    b.HasOne("DAL.Employee", "InventoryBy")
+                        .WithMany("Products")
+                        .HasForeignKey("InventoryByID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DAL.Products", null)
-                        .WithMany()
-                        .HasForeignKey("ProductsID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("InventoryBy");
+                });
+
+            modelBuilder.Entity("DAL.Department", b =>
+                {
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("DAL.Employee", b =>
                 {
                     b.Navigation("Emails");
+
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("DAL.Products", b =>
                 {
+                    b.Navigation("Departments");
+
                     b.Navigation("Ingredients");
                 });
 #pragma warning restore 612, 618

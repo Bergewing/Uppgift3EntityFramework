@@ -15,11 +15,16 @@ namespace DAL
         public double Price { get; set; }
         public int Barcode { get; set; }
         public int CampaignsID { get; set; }
-        public int InventoryBy { get; set; }
+        public int InventoryByID { get; set; }
         public int InventoryDate { get; set; }
 
-        public List<Department> Departments { get; set; }
+
+        //Navigation Propertys och mer??
+        public Employee InventoryBy { get; set; }
+
+        public List<DepartmentProducts> Departments { get; set; }
 
         public List<Ingredients> Ingredients { get; set; }
+
     }
 }
