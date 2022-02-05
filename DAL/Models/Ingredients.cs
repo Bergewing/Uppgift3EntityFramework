@@ -10,9 +10,15 @@ namespace DAL
 {
     public class Ingredients
     {
+        //Key1 Ligger i modelbuilder
         public string Ingredient { get; set; }
-        public int ProductID { get; set; }
 
+        //key2 Ligger i modelbuilder
+        public int ProductsID { get; set; }
+        //Key 1 och 2 blir composite key
+
+
+        //En ingredient kan bara kopplas till en produkt därav bara en vanlig "class" navigation property
         public Products products { get; set; }
 
         //Hur funkar Multi value attributes??

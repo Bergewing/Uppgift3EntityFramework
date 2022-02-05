@@ -8,12 +8,12 @@ namespace DAL
 {
     public class Department
     {
-        public int DepartmentID { get; set; } 
+        //public int DepartmentID { get; set; } 
         public string Name { get; set; }
         public int Manager { get; set; }
 
 
-        //Navigation Property
+        //Navigation Property       //En department kan ha många produkter, därav lista
         public List<DepartmentProducts> Products { get; set; }
     }
 }

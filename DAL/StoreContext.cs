@@ -19,14 +19,40 @@ namespace DAL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Department>()
+                .HasKey(n => n.Name);
+
             modelBuilder.Entity<Ingredients>()
-                .HasKey(s => new { s.Ingredient, s.ProductID });
+                .HasKey(s => new { s.Ingredient, s.ProductsID });
 
             modelBuilder.Entity<Email>()
                 .HasKey(x => new { x.Emails, x.EmployeeID });
 
             modelBuilder.Entity<DepartmentProducts>()
                 .HasKey(dp => new { dp.ProductsID, dp.DepartmentID });
+
+            modelBuilder.Entity<Products>()
+                .HasKey(pc => new { pc.ProductsID, pc.CampaignsID });
+
+            //Lägg in alla employee i extension mappen
+            modelBuilder.Entity<Employee>()
+                .HasIndex(e => e.SSN)
+                .IsUnique();
+
+            modelBuilder.Entity<Employee>()         //Kolla om denna snurrar rätt
+                .HasOne<Employee>(e => e.Mentor)
+                .WithMany(t => t.Trainees)
+                .HasForeignKey(e => e.MentorID);
+
+            modelBuilder.Entity<Employee>()
+                .Property(d => d.EndDate)
+                .HasColumnType("date");
+
+
+            //modelBuilder.Entity<DepartmentProducts>()     //är denna utveckling av relation överflödig?
+            //.HasOne<Products>(dp => dp.products)
+            //.WithMany(p => p.Departments)
+            //.HasForeignKey(dp => dp.ProductsID);
 
             modelBuilder.Seed();
         }

@@ -22,9 +22,13 @@ namespace DAL
         //Navigation Propertys och mer??
         public Employee InventoryBy { get; set; }
 
+        //En produkt kan ha många ingredienser därav lista
         public List<DepartmentProducts> Departments { get; set; }
 
         public List<Ingredients> Ingredients { get; set; }
+
+        //Navigation Property
+        public Campaigns Campaigns { get; set; }
 
     }
 }

@@ -10,20 +10,15 @@ namespace DAL
 {
     public class Email
     {
-        //[Key]
-        //public int ID { get; set; }
-
-        //[Column(Order = 1)]
-        public string Emails { get; set; }
+        //Key1 Ligger i modelbuilder, nullable=true
+        public string? Emails { get; set; }
 
         
-        //[Column(Order = 2)]
+        //Key2 Ligger i modelbuilder
         public int EmployeeID { get; set; }
 
+
+        //Navigation Property
         public Employee Employee { get; set; }
-
-
-        
-        //Denna ska också vara en multi value likt ingredients
     }
 }
