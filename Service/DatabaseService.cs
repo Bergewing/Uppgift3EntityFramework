@@ -41,6 +41,32 @@ namespace Service
                 .OrderBy(x => x.Amount);
             }
         }
+
+        //public void ProductUpdate(int productId, int updateAmount)
+        //{
+        //    using (var db = new StoreContext())
+        //    {
+        //        var update = db.Products.First(p => p.ProductsID == productId);
+        //        update.Amount = updateAmount;
+        //        db.SaveChanges();
+
+        //    }
+        //}
+
+
+        public void ProductUpdate(ProductUpdateDTO updateInfo)
+        {
+            using (var db = new StoreContext())
+            {
+                var update = db.Products.First(p => p.ProductsID == updateInfo.ProductsID);
+                update.Amount = updateInfo.Amount;
+                db.SaveChanges();
+
+            }
+        }
+        //var product = context.Product.First(p => p.ProductID == newInfo.ProductId);
+        //                product.ProductAmount = newInfo.NewAmount;
+        //                context.SaveChanges();
     }
 }
 

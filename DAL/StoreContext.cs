@@ -28,11 +28,23 @@ namespace DAL
             modelBuilder.Entity<Email>()
                 .HasKey(x => new { x.Emails, x.EmployeeID });
 
+            //modelBuilder.Entity<Campaigns>()
+            //    .HasKey(pc => new { pc.ProductsID, pc.CampaignsID });
+
             modelBuilder.Entity<DepartmentProducts>()
                 .HasKey(dp => new { dp.ProductsID, dp.DepartmentID });
 
-            modelBuilder.Entity<Products>()
-                .HasKey(pc => new { pc.ProductsID, pc.CampaignsID });
+            modelBuilder.Entity<DepartmentProducts>()
+                .HasOne(dp => dp.Department)
+                .WithMany(d => d.Products)
+                .HasForeignKey(dp => dp.DepartmentID)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<DepartmentProducts>()
+                .HasOne(dp => dp.Products)
+                .WithMany(d => d.Departments)
+                .HasForeignKey(dp => dp.ProductsID)
+                .OnDelete(DeleteBehavior.Restrict);
 
             //Lägg in alla employee i extension mappen
             modelBuilder.Entity<Employee>()
@@ -46,6 +58,20 @@ namespace DAL
 
             modelBuilder.Entity<Employee>()
                 .Property(d => d.EndDate)
+                .HasColumnType("date");
+
+            //Products
+
+            modelBuilder.Entity<Products>()
+                .Property(p => p.ExpirationDate)
+                .HasColumnType("date");
+
+            modelBuilder.Entity<Products>()
+                .Property(p => p.Price)
+                .HasColumnType("money");
+
+            modelBuilder.Entity<Products>()
+                .Property(p => p.InventoryDate)
                 .HasColumnType("date");
 
 

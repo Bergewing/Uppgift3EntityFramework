@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAL.Migrations
 {
     [DbContext(typeof(StoreContext))]
-    [Migration("20220205203052_Update10")]
-    partial class Update10
+    [Migration("20220207131238_Test23")]
+    partial class Test23
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -55,12 +55,15 @@ namespace DAL.Migrations
             modelBuilder.Entity("DAL.Department", b =>
                 {
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("Manager")
+                    b.Property<int>("ManagerID")
                         .HasColumnType("int");
 
                     b.HasKey("Name");
+
+                    b.HasIndex("ManagerID");
 
                     b.ToTable("Department");
 
@@ -68,32 +71,32 @@ namespace DAL.Migrations
                         new
                         {
                             Name = "Dairy",
-                            Manager = 1
+                            ManagerID = 1
                         },
                         new
                         {
                             Name = "Fruit&Vegetable",
-                            Manager = 1
+                            ManagerID = 1
                         },
                         new
                         {
                             Name = "Pantry",
-                            Manager = 2
+                            ManagerID = 2
                         },
                         new
                         {
                             Name = "Drink",
-                            Manager = 2
+                            ManagerID = 2
                         },
                         new
                         {
                             Name = "Bread",
-                            Manager = 3
+                            ManagerID = 3
                         },
                         new
                         {
                             Name = "Meat",
-                            Manager = 4
+                            ManagerID = 4
                         });
                 });
 
@@ -103,21 +106,50 @@ namespace DAL.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("DepartmentID")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("ProductsID1")
-                        .HasColumnType("int");
-
-                    b.Property<int>("productsCampaignsID")
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("ProductsID", "DepartmentID");
 
                     b.HasIndex("DepartmentID");
 
-                    b.HasIndex("ProductsID1", "productsCampaignsID");
-
                     b.ToTable("DepartmentProducts");
+
+                    b.HasData(
+                        new
+                        {
+                            ProductsID = 1,
+                            DepartmentID = "Dairy"
+                        },
+                        new
+                        {
+                            ProductsID = 2,
+                            DepartmentID = "Fruit&Vegetable"
+                        },
+                        new
+                        {
+                            ProductsID = 3,
+                            DepartmentID = "Pantry"
+                        },
+                        new
+                        {
+                            ProductsID = 4,
+                            DepartmentID = "Drink"
+                        },
+                        new
+                        {
+                            ProductsID = 5,
+                            DepartmentID = "Bread"
+                        },
+                        new
+                        {
+                            ProductsID = 6,
+                            DepartmentID = "Meat"
+                        },
+                        new
+                        {
+                            ProductsID = 5,
+                            DepartmentID = "Meat"
+                        });
                 });
 
             modelBuilder.Entity("DAL.Email", b =>
@@ -266,8 +298,8 @@ namespace DAL.Migrations
                             EndDate = new DateTime(2022, 10, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             MentorID = 2,
                             Name = "Thomas Karlsson",
-                            PhoneNr = "0700000001",
-                            SSN = "0000000001",
+                            PhoneNr = "0700000006",
+                            SSN = "0000000006",
                             Title = "Trainee"
                         });
                 });
@@ -280,15 +312,9 @@ namespace DAL.Migrations
                     b.Property<int>("ProductsID")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProductsID1")
-                        .HasColumnType("int");
-
-                    b.Property<int>("productsCampaignsID")
-                        .HasColumnType("int");
-
                     b.HasKey("Ingredient", "ProductsID");
 
-                    b.HasIndex("ProductsID1", "productsCampaignsID");
+                    b.HasIndex("ProductsID");
 
                     b.ToTable("Ingredients");
                 });
@@ -296,10 +322,10 @@ namespace DAL.Migrations
             modelBuilder.Entity("DAL.Products", b =>
                 {
                     b.Property<int>("ProductsID")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("CampaignsID")
-                        .HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductsID"), 1L, 1);
 
                     b.Property<int>("Amount")
                         .HasColumnType("int");
@@ -307,23 +333,27 @@ namespace DAL.Migrations
                     b.Property<int>("Barcode")
                         .HasColumnType("int");
 
-                    b.Property<int>("ExpirationDate")
+                    b.Property<int?>("CampaignsID")
+                        .IsRequired()
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("ExpirationDate")
+                        .HasColumnType("date");
 
                     b.Property<int>("InventoryByID")
                         .HasColumnType("int");
 
-                    b.Property<int>("InventoryDate")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("InventoryDate")
+                        .HasColumnType("date");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("money");
 
                     b.Property<string>("ProductName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ProductsID", "CampaignsID");
+                    b.HasKey("ProductsID");
 
                     b.HasIndex("CampaignsID");
 
@@ -335,94 +365,105 @@ namespace DAL.Migrations
                         new
                         {
                             ProductsID = 1,
-                            CampaignsID = 1,
                             Amount = 10,
                             Barcode = 1,
-                            ExpirationDate = 123,
+                            CampaignsID = 1,
+                            ExpirationDate = new DateTime(2023, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             InventoryByID = 1,
-                            InventoryDate = 123,
-                            Price = 15.0,
+                            InventoryDate = new DateTime(2022, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Price = 15m,
                             ProductName = "6 pack Eggs"
                         },
                         new
                         {
                             ProductsID = 2,
-                            CampaignsID = 1,
                             Amount = 5,
                             Barcode = 2,
-                            ExpirationDate = 321,
+                            CampaignsID = 1,
+                            ExpirationDate = new DateTime(2022, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             InventoryByID = 2,
-                            InventoryDate = 321,
-                            Price = 10.0,
+                            InventoryDate = new DateTime(2022, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Price = 10m,
                             ProductName = "Onion in Net"
                         },
                         new
                         {
                             ProductsID = 3,
-                            CampaignsID = 1,
                             Amount = 9,
                             Barcode = 3,
-                            ExpirationDate = 555,
+                            CampaignsID = 1,
+                            ExpirationDate = new DateTime(2022, 12, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             InventoryByID = 3,
-                            InventoryDate = 777,
-                            Price = 25.0,
+                            InventoryDate = new DateTime(2022, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Price = 25m,
                             ProductName = "Cornflakes"
                         },
                         new
                         {
                             ProductsID = 4,
-                            CampaignsID = 1,
                             Amount = 25,
                             Barcode = 4,
-                            ExpirationDate = 456,
+                            CampaignsID = 1,
+                            ExpirationDate = new DateTime(2023, 12, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             InventoryByID = 4,
-                            InventoryDate = 345,
-                            Price = 20.0,
+                            InventoryDate = new DateTime(2022, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Price = 20m,
                             ProductName = "Coca-cola"
                         },
                         new
                         {
                             ProductsID = 5,
-                            CampaignsID = 1,
                             Amount = 3,
                             Barcode = 5,
-                            ExpirationDate = 345,
+                            CampaignsID = 1,
+                            ExpirationDate = new DateTime(2022, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             InventoryByID = 5,
-                            InventoryDate = 234,
-                            Price = 17.0,
+                            InventoryDate = new DateTime(2022, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Price = 17m,
                             ProductName = "Toast"
                         },
                         new
                         {
                             ProductsID = 6,
-                            CampaignsID = 1,
                             Amount = 5,
                             Barcode = 6,
-                            ExpirationDate = 999,
+                            CampaignsID = 1,
+                            ExpirationDate = new DateTime(2023, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             InventoryByID = 6,
-                            InventoryDate = 888,
-                            Price = 80.0,
-                            ProductName = "Riby Eye"
+                            InventoryDate = new DateTime(2022, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Price = 80m,
+                            ProductName = "Rib Eye"
                         });
+                });
+
+            modelBuilder.Entity("DAL.Department", b =>
+                {
+                    b.HasOne("DAL.Employee", "Manager")
+                        .WithMany()
+                        .HasForeignKey("ManagerID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Manager");
                 });
 
             modelBuilder.Entity("DAL.DepartmentProducts", b =>
                 {
-                    b.HasOne("DAL.Department", "department")
+                    b.HasOne("DAL.Department", "Department")
                         .WithMany("Products")
                         .HasForeignKey("DepartmentID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("DAL.Products", "products")
+                    b.HasOne("DAL.Products", "Products")
                         .WithMany("Departments")
-                        .HasForeignKey("ProductsID1", "productsCampaignsID")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("ProductsID")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("department");
+                    b.Navigation("Department");
 
-                    b.Navigation("products");
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("DAL.Email", b =>
@@ -449,7 +490,7 @@ namespace DAL.Migrations
                 {
                     b.HasOne("DAL.Products", "products")
                         .WithMany("Ingredients")
-                        .HasForeignKey("ProductsID1", "productsCampaignsID")
+                        .HasForeignKey("ProductsID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

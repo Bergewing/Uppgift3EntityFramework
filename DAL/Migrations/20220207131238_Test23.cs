@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DAL.Migrations
 {
-    public partial class Update10 : Migration
+    public partial class Test23 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -21,18 +21,6 @@ namespace DAL.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Campaigns", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Department",
-                columns: table => new
-                {
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Manager = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Department", x => x.Name);
                 });
 
             migrationBuilder.CreateTable(
@@ -59,6 +47,24 @@ namespace DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Department",
+                columns: table => new
+                {
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    ManagerID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Department", x => x.Name);
+                    table.ForeignKey(
+                        name: "FK_Department_Employee_ManagerID",
+                        column: x => x.ManagerID,
+                        principalTable: "Employee",
+                        principalColumn: "EmployeeID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Email",
                 columns: table => new
                 {
@@ -80,19 +86,20 @@ namespace DAL.Migrations
                 name: "Products",
                 columns: table => new
                 {
-                    ProductsID = table.Column<int>(type: "int", nullable: false),
-                    CampaignsID = table.Column<int>(type: "int", nullable: false),
+                    ProductsID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     ProductName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Amount = table.Column<int>(type: "int", nullable: false),
-                    ExpirationDate = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<double>(type: "float", nullable: false),
+                    ExpirationDate = table.Column<DateTime>(type: "date", nullable: false),
+                    Price = table.Column<decimal>(type: "money", nullable: false),
                     Barcode = table.Column<int>(type: "int", nullable: false),
+                    CampaignsID = table.Column<int>(type: "int", nullable: false),
                     InventoryByID = table.Column<int>(type: "int", nullable: false),
-                    InventoryDate = table.Column<int>(type: "int", nullable: false)
+                    InventoryDate = table.Column<DateTime>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Products", x => new { x.ProductsID, x.CampaignsID });
+                    table.PrimaryKey("PK_Products", x => x.ProductsID);
                     table.ForeignKey(
                         name: "FK_Products_Campaigns_CampaignsID",
                         column: x => x.CampaignsID,
@@ -112,9 +119,7 @@ namespace DAL.Migrations
                 columns: table => new
                 {
                     ProductsID = table.Column<int>(type: "int", nullable: false),
-                    DepartmentID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProductsID1 = table.Column<int>(type: "int", nullable: false),
-                    productsCampaignsID = table.Column<int>(type: "int", nullable: false)
+                    DepartmentID = table.Column<string>(type: "nvarchar(50)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -124,13 +129,13 @@ namespace DAL.Migrations
                         column: x => x.DepartmentID,
                         principalTable: "Department",
                         principalColumn: "Name",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_DepartmentProducts_Products_ProductsID1_productsCampaignsID",
-                        columns: x => new { x.ProductsID1, x.productsCampaignsID },
+                        name: "FK_DepartmentProducts_Products_ProductsID",
+                        column: x => x.ProductsID,
                         principalTable: "Products",
-                        principalColumns: new[] { "ProductsID", "CampaignsID" },
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "ProductsID",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -138,18 +143,16 @@ namespace DAL.Migrations
                 columns: table => new
                 {
                     Ingredient = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProductsID = table.Column<int>(type: "int", nullable: false),
-                    ProductsID1 = table.Column<int>(type: "int", nullable: false),
-                    productsCampaignsID = table.Column<int>(type: "int", nullable: false)
+                    ProductsID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Ingredients", x => new { x.Ingredient, x.ProductsID });
                     table.ForeignKey(
-                        name: "FK_Ingredients_Products_ProductsID1_productsCampaignsID",
-                        columns: x => new { x.ProductsID1, x.productsCampaignsID },
+                        name: "FK_Ingredients_Products_ProductsID",
+                        column: x => x.ProductsID,
                         principalTable: "Products",
-                        principalColumns: new[] { "ProductsID", "CampaignsID" },
+                        principalColumn: "ProductsID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -157,19 +160,6 @@ namespace DAL.Migrations
                 table: "Campaigns",
                 columns: new[] { "ID", "Name", "PriceReduction" },
                 values: new object[] { 1, "RegularPrice", 0.0 });
-
-            migrationBuilder.InsertData(
-                table: "Department",
-                columns: new[] { "Name", "Manager" },
-                values: new object[,]
-                {
-                    { "Bread", 3 },
-                    { "Dairy", 1 },
-                    { "Drink", 2 },
-                    { "Fruit&Vegetable", 1 },
-                    { "Meat", 4 },
-                    { "Pantry", 2 }
-                });
 
             migrationBuilder.InsertData(
                 table: "Employee",
@@ -180,6 +170,19 @@ namespace DAL.Migrations
                     { 2, null, null, "Simon Bergewing", "0700000002", "0000000002", "Manager" },
                     { 3, null, null, "Anders Andersson", "0700000003", "0000000003", "Employee" },
                     { 4, null, null, "Tobias Persson", "0700000004", "0000000004", "Employee" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Department",
+                columns: new[] { "Name", "ManagerID" },
+                values: new object[,]
+                {
+                    { "Bread", 3 },
+                    { "Dairy", 1 },
+                    { "Drink", 2 },
+                    { "Fruit&Vegetable", 1 },
+                    { "Meat", 4 },
+                    { "Pantry", 2 }
                 });
 
             migrationBuilder.InsertData(
@@ -206,13 +209,24 @@ namespace DAL.Migrations
 
             migrationBuilder.InsertData(
                 table: "Products",
-                columns: new[] { "CampaignsID", "ProductsID", "Amount", "Barcode", "ExpirationDate", "InventoryByID", "InventoryDate", "Price", "ProductName" },
+                columns: new[] { "ProductsID", "Amount", "Barcode", "CampaignsID", "ExpirationDate", "InventoryByID", "InventoryDate", "Price", "ProductName" },
                 values: new object[,]
                 {
-                    { 1, 1, 10, 1, 123, 1, 123, 15.0, "6 pack Eggs" },
-                    { 1, 2, 5, 2, 321, 2, 321, 10.0, "Onion in Net" },
-                    { 1, 3, 9, 3, 555, 3, 777, 25.0, "Cornflakes" },
-                    { 1, 4, 25, 4, 456, 4, 345, 20.0, "Coca-cola" }
+                    { 1, 10, 1, 1, new DateTime(2023, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, new DateTime(2022, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 15m, "6 pack Eggs" },
+                    { 2, 5, 2, 1, new DateTime(2022, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, new DateTime(2022, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 10m, "Onion in Net" },
+                    { 3, 9, 3, 1, new DateTime(2022, 12, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, new DateTime(2022, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 25m, "Cornflakes" },
+                    { 4, 25, 4, 1, new DateTime(2023, 12, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, new DateTime(2022, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 20m, "Coca-cola" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "DepartmentProducts",
+                columns: new[] { "DepartmentID", "ProductsID" },
+                values: new object[,]
+                {
+                    { "Dairy", 1 },
+                    { "Fruit&Vegetable", 2 },
+                    { "Pantry", 3 },
+                    { "Drink", 4 }
                 });
 
             migrationBuilder.InsertData(
@@ -226,22 +240,37 @@ namespace DAL.Migrations
 
             migrationBuilder.InsertData(
                 table: "Products",
-                columns: new[] { "CampaignsID", "ProductsID", "Amount", "Barcode", "ExpirationDate", "InventoryByID", "InventoryDate", "Price", "ProductName" },
+                columns: new[] { "ProductsID", "Amount", "Barcode", "CampaignsID", "ExpirationDate", "InventoryByID", "InventoryDate", "Price", "ProductName" },
                 values: new object[,]
                 {
-                    { 1, 5, 3, 5, 345, 5, 234, 17.0, "Toast" },
-                    { 1, 6, 5, 6, 999, 6, 888, 80.0, "Riby Eye" }
+                    { 5, 3, 5, 1, new DateTime(2022, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 5, new DateTime(2022, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 17m, "Toast" },
+                    { 6, 5, 6, 1, new DateTime(2023, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 6, new DateTime(2022, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 80m, "Rib Eye" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "DepartmentProducts",
+                columns: new[] { "DepartmentID", "ProductsID" },
+                values: new object[] { "Bread", 5 });
+
+            migrationBuilder.InsertData(
+                table: "DepartmentProducts",
+                columns: new[] { "DepartmentID", "ProductsID" },
+                values: new object[] { "Meat", 5 });
+
+            migrationBuilder.InsertData(
+                table: "DepartmentProducts",
+                columns: new[] { "DepartmentID", "ProductsID" },
+                values: new object[] { "Meat", 6 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Department_ManagerID",
+                table: "Department",
+                column: "ManagerID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DepartmentProducts_DepartmentID",
                 table: "DepartmentProducts",
                 column: "DepartmentID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DepartmentProducts_ProductsID1_productsCampaignsID",
-                table: "DepartmentProducts",
-                columns: new[] { "ProductsID1", "productsCampaignsID" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Email_EmployeeID",
@@ -260,9 +289,9 @@ namespace DAL.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ingredients_ProductsID1_productsCampaignsID",
+                name: "IX_Ingredients_ProductsID",
                 table: "Ingredients",
-                columns: new[] { "ProductsID1", "productsCampaignsID" });
+                column: "ProductsID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_CampaignsID",

@@ -7,13 +7,19 @@ namespace Uppgift3EntityFramework.Controllers
 {
     [Route("products")]
     [ApiController]
-    public class StoreController : ControllerBase
+    public class ProductController : ControllerBase
     {
         [HttpGet("count")]
         public IOrderedEnumerable<ProductCountDTO> Count()
         {
             return DatabaseService.Instance.ListCount();
 
+        }
+
+        [HttpPost("UpdateProduct")]
+        public void UpdateAmount([FromBody] ProductUpdateDTO updateInfo)
+        {
+            DatabaseService.Instance.ProductUpdate(updateInfo);
         }
     }
 }

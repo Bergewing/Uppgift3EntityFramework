@@ -11,11 +11,11 @@ namespace DAL               //städa upp denna sida från kommentarer innan inl�
         //Key 1
         public int ProductsID { get; set; }
         //Navigation Property
-        public Products products { get; set; }
+        public Products Products { get; set; }
 
         //Key 2
         public string DepartmentID { get; set; }
         //Navigation Property       //Många sidan behöver bara ha en vanlig "class" navigation property
-        public Department department { get; set; }
+        public Department Department { get; set; }
     }
 }

@@ -3,20 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace DAL
 {
     public class Products
-    {
+    {   [Key]
         public int ProductsID { get; set; }
+        [Required]
         public string ProductName { get; set; }
+        [Required]
         public int Amount { get; set; }
-        public int ExpirationDate { get; set; }
+        [Required]
+        public DateTime ExpirationDate { get; set; }
+        //Money ??
         public double Price { get; set; }
+        [Required] //Jag försökte köra barcode som PK men Entity vill inte
         public int Barcode { get; set; }
-        public int CampaignsID { get; set; }
+        [Required] //??
+        public int? CampaignsID { get; set; }
+        [Required]
         public int InventoryByID { get; set; }
-        public int InventoryDate { get; set; }
+        [Required]
+        public DateTime InventoryDate { get; set; }
 
 
         //Navigation Propertys och mer??

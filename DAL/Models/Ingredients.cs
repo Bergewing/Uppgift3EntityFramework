@@ -21,7 +21,5 @@ namespace DAL
         //En ingredient kan bara kopplas till en produkt därav bara en vanlig "class" navigation property
         public Products products { get; set; }
 
-        //Hur funkar Multi value attributes??
-        //Hur gör jag primary keys?
     }
 }
