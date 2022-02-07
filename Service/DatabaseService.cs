@@ -30,7 +30,6 @@ namespace Service
         {
             using (var db = new StoreContext())
             {
-
                 return db.Products
                 .Select(x => new ProductCountDTO
                 {
@@ -42,18 +41,6 @@ namespace Service
             }
         }
 
-        //public void ProductUpdate(int productId, int updateAmount)
-        //{
-        //    using (var db = new StoreContext())
-        //    {
-        //        var update = db.Products.First(p => p.ProductsID == productId);
-        //        update.Amount = updateAmount;
-        //        db.SaveChanges();
-
-        //    }
-        //}
-
-
         public void ProductUpdate(ProductUpdateDTO updateInfo)
         {
             using (var db = new StoreContext())
@@ -64,42 +51,17 @@ namespace Service
 
             }
         }
-        //var product = context.Product.First(p => p.ProductID == newInfo.ProductId);
-        //                product.ProductAmount = newInfo.NewAmount;
-        //                context.SaveChanges();
+
+        public IOrderedEnumerable<DepartmentManagerDTO> GetEmail()
+        {
+            using (var db = new StoreContext())
+            {
+                db.Department.Join<Department>.
+
+            }
+
+        }
+
     }
 }
 
-/*1.Skapa en controller för hantering av produkter. Controller:n ska mappa mot /products. a.Skapa en endpoint som listar alla produkters namn och antal i lager.
- * Listan ska vara sorterad på antal i lager med lägst värde först. Mappa endpoint:en mot /products/count.*/
-        //public List<ProductCountDTO> ListCount()
-        //{
-        //    using (var db = new StoreContext())
-        //    {
-        //        List<ProductCountDTO> productCounts = new List<ProductCountDTO>();
-        //        foreach (var item in db.Products)
-        //        {
-        //            db.Products.Select(x => new ProductCountDTO
-        //             {
-        //                 Name = x.ProductName,
-        //                 Amount = x.Amount
-        //             })
-        //            .ToList()
-        //            .OrderBy(x => x.Amount);
-
-        //            productCounts.Add(item.ProductName)
-
-        //        }
-
-
-        //        //return db.Products
-        //        //.Select(x => new ProductCountDTO
-        //        //{
-        //        //    Name = x.ProductName,
-        //        //    Amount = x.Amount
-        //        //})
-        //        //.ToList()
-        //        //.OrderBy(x => x.Amount)
-        //        //;
-        //    }
-        //}
