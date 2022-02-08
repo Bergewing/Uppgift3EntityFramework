@@ -10,11 +10,10 @@ namespace DAL
 {
     public class Email
     {
-        //Key1 Ligger i modelbuilder, nullable=true
+        //Key1
         public string? Emails { get; set; }
-
         
-        //Key2 Ligger i modelbuilder
+        //Key2
         public int EmployeeID { get; set; }
 
 

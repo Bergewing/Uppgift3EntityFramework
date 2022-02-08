@@ -5,14 +5,14 @@ using DAL;
 
 namespace Uppgift3EntityFramework.Controllers
 {
-    [Route("controller")]
+    [Route("department")]
     [ApiController]
     public class DepartmentController : ControllerBase
     {
         [HttpGet]
-        public IOrderedEnumerable<DepartmentManagerDTO> DepartmentManager()
+        public List<DepartmentManagerDTO> DepartmentManager()
         {
-            return DatabaseService.Instance.GetEmail();
+            return DatabaseService.Instance.GetEmailToDepartment();
         }
 
     }

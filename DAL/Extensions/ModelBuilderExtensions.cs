@@ -46,7 +46,7 @@ namespace DAL.Extensions
 
             builder.Entity<Department>().HasData
                 (
-                    new Department { /*DepartmentID = 1 ,*/ Name = "Dairy", ManagerID = 1 },
+                    new Department { Name = "Dairy", ManagerID = 1 },
                     new Department { Name = "Fruit&Vegetable", ManagerID = 1 },
                     new Department { Name = "Pantry", ManagerID = 2 },
                     new Department { Name = "Drink", ManagerID = 2 },

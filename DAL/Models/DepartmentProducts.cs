@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL               //städa upp denna sida från kommentarer innan inlämning
+namespace DAL
 {
     public class DepartmentProducts
     {
@@ -15,7 +15,7 @@ namespace DAL               //städa upp denna sida från kommentarer innan inl�
 
         //Key 2
         public string DepartmentID { get; set; }
-        //Navigation Property       //Många sidan behöver bara ha en vanlig "class" navigation property
+        //Navigation Property
         public Department Department { get; set; }
     }
 }

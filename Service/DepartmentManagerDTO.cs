@@ -10,6 +10,6 @@ namespace Service
     {
         public string Name { get; set; }
 
-        public string Emails { get; set; }
+        public List<string> Email { get; set; }
     }
 }

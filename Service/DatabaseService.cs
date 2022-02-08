@@ -1,4 +1,5 @@
 ﻿using DAL;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,20 +49,30 @@ namespace Service
                 var update = db.Products.First(p => p.ProductsID == updateInfo.ProductsID);
                 update.Amount = updateInfo.Amount;
                 db.SaveChanges();
-
             }
         }
 
-        public IOrderedEnumerable<DepartmentManagerDTO> GetEmail()
-        {
+        public List<DepartmentManagerDTO> GetEmailToDepartment()
+        { 
             using (var db = new StoreContext())
             {
-                db.Department.Join<Department>.
+                List<DepartmentManagerDTO> managerEmailList = new List<DepartmentManagerDTO>();
+                var department = db.Department.ToList();
+                foreach (var name in department)
+                {
+                    var manager = db.Employee.Include(x => x.Emails).First(x => x.EmployeeID == name.ManagerID);
+                    var list = manager.Emails.Select(x => x.Emails).ToList();
+
+                    managerEmailList.Add(new DepartmentManagerDTO
+                    {
+                        Name = name.Name,
+                        Email = list
+                    });
+                }
+                return managerEmailList;
 
             }
-
         }
-
     }
 }
 

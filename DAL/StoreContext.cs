@@ -13,7 +13,6 @@ namespace DAL
                 .UseSqlServer(connectionString)
                 .LogTo(Console.WriteLine, LogLevel.Information)
                 .EnableSensitiveDataLogging();
-
         }
 
 
@@ -27,9 +26,6 @@ namespace DAL
 
             modelBuilder.Entity<Email>()
                 .HasKey(x => new { x.Emails, x.EmployeeID });
-
-            //modelBuilder.Entity<Campaigns>()
-            //    .HasKey(pc => new { pc.ProductsID, pc.CampaignsID });
 
             modelBuilder.Entity<DepartmentProducts>()
                 .HasKey(dp => new { dp.ProductsID, dp.DepartmentID });
@@ -51,7 +47,7 @@ namespace DAL
                 .HasIndex(e => e.SSN)
                 .IsUnique();
 
-            modelBuilder.Entity<Employee>()         //Kolla om denna snurrar rätt
+            modelBuilder.Entity<Employee>()
                 .HasOne<Employee>(e => e.Mentor)
                 .WithMany(t => t.Trainees)
                 .HasForeignKey(e => e.MentorID);
@@ -61,7 +57,6 @@ namespace DAL
                 .HasColumnType("date");
 
             //Products
-
             modelBuilder.Entity<Products>()
                 .Property(p => p.ExpirationDate)
                 .HasColumnType("date");
@@ -73,12 +68,6 @@ namespace DAL
             modelBuilder.Entity<Products>()
                 .Property(p => p.InventoryDate)
                 .HasColumnType("date");
-
-
-            //modelBuilder.Entity<DepartmentProducts>()     //är denna utveckling av relation överflödig?
-            //.HasOne<Products>(dp => dp.products)
-            //.WithMany(p => p.Departments)
-            //.HasForeignKey(dp => dp.ProductsID);
 
             modelBuilder.Seed();
         }
