@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DAL.Extensions
 {
-    internal static class ModelBuilderExtensions
+    internal static class SeedExtensions
     {
         public static void Seed(this ModelBuilder builder)
         {

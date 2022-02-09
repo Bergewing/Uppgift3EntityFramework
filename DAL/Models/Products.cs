@@ -16,11 +16,11 @@ namespace DAL
         public int Amount { get; set; }
         [Required]
         public DateTime ExpirationDate { get; set; }
-        //Money ??
+
         public double Price { get; set; }
         [Required] //Jag försökte köra barcode som PK men Entity vill inte
         public int Barcode { get; set; }
-        [Required] //??
+        [Required]
         public int? CampaignsID { get; set; }
         [Required]
         public int InventoryByID { get; set; }
@@ -28,15 +28,10 @@ namespace DAL
         public DateTime InventoryDate { get; set; }
 
 
-        //Navigation Propertys och mer??
+        //Navigation Propertys
         public Employee InventoryBy { get; set; }
-
-        //En produkt kan ha många ingredienser därav lista
         public List<DepartmentProducts> Departments { get; set; }
-
         public List<Ingredients> Ingredients { get; set; }
-
-        //Navigation Property
         public Campaigns Campaigns { get; set; }
 
     }

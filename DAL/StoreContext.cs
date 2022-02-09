@@ -42,7 +42,7 @@ namespace DAL
                 .HasForeignKey(dp => dp.ProductsID)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            //Lägg in alla employee i extension mappen
+            //Employees
             modelBuilder.Entity<Employee>()
                 .HasIndex(e => e.SSN)
                 .IsUnique();
